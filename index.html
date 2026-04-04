@@ -279,6 +279,136 @@
         </div>
     </section>
 
+        <!-- ============================================ -->
+    <!-- 🖼️ IMAGE GALLERY / SLIDESHOW SECTION -->
+    <!-- ============================================ -->
+    <section id="gallery" class="relative py-24 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white overflow-hidden">
+        <div class="absolute inset-0"><div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse-slow"></div><div class="absolute bottom-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay:1s"></div></div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/20 text-blue-300 text-sm font-semibold mb-6"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Photo Gallery</div>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6"><span class="gradient-text">Behind The Scenes</span></h2>
+                    <p class="text-xl text-slate-400 max-w-3xl mx-auto">Take a look inside Diamond Giant Consulting — our team, events, and daily operations</p>
+                </div>
+
+                <!-- SLIDESHOW CONTAINER -->
+                <div class="slideshow-container">
+                    <div class="slide-counter"><span id="current-slide">1</span> / <span id="total-slides">9</span></div>
+                    
+                    <button class="play-pause-btn" onclick="toggleAutoPlay()">
+                        <svg id="pauseIcon" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
+                        <svg id="playIcon" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <span id="playPauseText">Pause</span>
+                    </button>
+                    <div class="autoplay-indicator"><span class="playing-dot"></span><span>Auto-playing</span></div>
+
+                    <!-- ====== YOUR 9 IMAGES ARE HERE ====== -->
+                    <!-- Replace each src URL with your own hosted image URL -->
+                    <div class="slides-wrapper">
+                        
+                        <!-- Slide 1: CEO at Desk -->
+                        <div class="slide active">
+                            <img src="https://images.unsplash.com/photo-1560250097-016922se573?w=1200&q=80" alt="CEO at desk">
+                            <div class="slide-caption">
+                                <h3 class="text-2xl font-bold mb-2">Our Leadership</h3>
+                                <p class="text-slate-300">Dr Emmanuel Bassey Ekpe — CEO & Managing Director — Leading with vision and dedication</p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2: Director at Conference -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&q=80" alt="Director at conference">
+                            <div class="slide-caption">
+                                <h3 class="text-2xl font-bold mb-2">Oxford International Agent Conference 2025</h3>
+                                <p class="text-slate-300">Mrs Vivianne Ekpe — Director — Representing Diamond Giant at global education conferences</p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: Team at University Event -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&q=80" alt="Team at university event">
+                            <div class="slide-caption">
+                                <h3 class="text-2xl font-bold mb-2">Global Partnerships</h3>
+                                <p class="text-slate-300">Building relationships with prestigious institutions around the world</p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 4: Full Team Photo -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71b?w=1200&q=80" alt="Full team photo">
+                            <div class="slide-caption">
+                                <h3 class="text-2xl font-bold mb-2">Meet Our Amazing Team</h3>
+                                <p class="text-slate-300">The dedicated professionals behind every student's success story</p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 5: Team at Reception -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1600880292089-201a682e26a56?w=1200&q=80" alt="Team at reception">
+                            <div class="slide-caption">
+                                <h3 class="text-2xl font-bold mb-2">Welcome to Our Office</h3>
+                                <p class="text-slate-300">Our modern Lagos Island headquarters — ready to serve you</p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 6: Consultation Session -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1556761175-b413da4b72d6?w=1200&q=80" alt="Consultation session">
+                            <div class="slide-caption">
+                                <h3 class="text-2xl font-bold mb-2">Personalized Consultations</h3>
+                                <p class="text-slate-300">One-on-one sessions guiding students toward their perfect educational path</p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 7: Staff Working -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&q=80" alt="Staff working">
+                            <div class="slide-caption">
+                                <h3 class="text-2xl font-bold mb-2">Dedicated Service</h3>
+                                <p class="text-slate-300">Our team working tirelessly to process applications and documentation</p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 8: Staff on Laptop -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&q=80" alt="Staff on laptop">
+                            <div class="slide-caption">
+                                <h3 class="text-2xl font-bold mb-2">Attention to Detail</h3>
+                                <p class="text-slate-300">Every application is handled with care and precision</p>
+                            </div>
+                        </div>
+
+                        <!-- Slide 9: Connected Globally -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&q=80" alt="Staff connected globally">
+                            <div class="slide-caption">
+                                <h3 class="text-2xl font-bold mb-2">Always Connected</h3>
+                                <p class="text-slate-300">Staying connected with partner universities and students worldwide</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Navigation Arrows -->
+                    <button class="prev-btn" onclick="changeSlide(-1)"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+                    <button class="next-btn" onclick="changeSlide(1)"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+
+                    <!-- Dots -->
+                    <div class="dots-container" id="dotsContainer"></div>
+                </div>
+
+                <!-- Thumbnails -->
+                <div class="thumbnail-strip" id="thumbnailStrip"></div>
+
+                <div class="mt-8 text-center">
+                    <p class="text-slate-400 text-sm"><svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Click thumbnails or use ← → arrow keys • Auto-advances every 5 seconds</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Destinations Section -->
     <section id="destinations" class="relative py-24 bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-hidden">
         <div class="container mx-auto px-4">
