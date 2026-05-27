@@ -1676,7 +1676,7 @@
 
    <script>
         // ============================================
-        // 🖼️ SLIDESHOW JAVASCRIPT FUNCTIONALITY
+        // FIXED SLIDESHOW - Prevents page scrolling
         // ============================================
         
         let currentSlide = 0;
@@ -1684,6 +1684,9 @@
         let autoPlayInterval;
         let touchStartX = 0;
         let touchEndX = 0;
+        let isUpdatingSlides = false;  // NEW: Prevent recursive updates
+        let scrollPosition = 0;         // NEW: Store scroll position
+        
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
         const dotsContainer = document.getElementById('dotsContainer');
@@ -1702,9 +1705,11 @@
             // Keyboard navigation
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowLeft') {
+                    e.preventDefault();  // NEW: Prevent default scroll
                     changeSlide(-1);
                     resetAutoPlay();
                 } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();  // NEW: Prevent default scroll
                     changeSlide(1);
                     resetAutoPlay();
                 }
@@ -1725,6 +1730,7 @@
         });
 
         function createDots() {
+            if (!dotsContainer) return;
             for (let i = 0; i < totalSlides; i++) {
                 const dot = document.createElement('div');
                 dot.className = `dot ${i === 0 ? 'active' : ''}`;
@@ -1734,8 +1740,11 @@
         }
 
         function createThumbnails() {
+            if (!thumbnailStrip) return;
             slides.forEach((slide, index) => {
-                const imgSrc = slide.querySelector('img').src;
+                const imgElement = slide.querySelector('img');
+                if (!imgElement) return;
+                const imgSrc = imgElement.src;
                 const thumb = document.createElement('div');
                 thumb.className = `thumbnail ${index === 0 ? 'active' : ''}`;
                 thumb.innerHTML = `<img src="${imgSrc}" alt="Thumbnail ${index + 1}">`;
@@ -1744,8 +1753,15 @@
             });
         }
 
+        // CRITICAL FIX: Save scroll position before updating, restore after update
         function updateSlides() {
-            // Update slides
+            if (isUpdatingSlides) return;  // Prevent recursive calls
+            isUpdatingSlides = true;
+            
+            // SAVE current scroll position
+            const scrollY = window.scrollY;
+            
+            // Update slides (DOM changes)
             slides.forEach((slide, index) => {
                 slide.classList.remove('active');
                 if (index === currentSlide) {
@@ -1768,13 +1784,22 @@
                 thumb.classList.remove('active');
                 if (index === currentSlide) {
                     thumb.classList.add('active');
-                    // Scroll thumbnail into view
-                    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    // Scroll thumbnail into view WITHOUT affecting main page scroll
+                    const thumbnailStripEl = document.getElementById('thumbnailStrip');
+                    if (thumbnailStripEl && thumb) {
+                        const thumbRect = thumb.getBoundingClientRect();
+                        const stripRect = thumbnailStripEl.getBoundingClientRect();
+                        if (thumbRect.right > stripRect.right || thumbRect.left < stripRect.left) {
+                            thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                        }
+                    }
                 }
             });
 
             // Update counter
-            currentSlideEl.textContent = currentSlide + 1;
+            if (currentSlideEl) {
+                currentSlideEl.textContent = currentSlide + 1;
+            }
 
             // Reset progress bar
             if (progressBar) {
@@ -1785,19 +1810,43 @@
                     progressBar.style.width = '100%';
                 }, 50);
             }
+            
+            // CRITICAL: Restore scroll position immediately
+            window.scrollTo(0, scrollY);
+            
+            // Allow updates again after a tiny delay
+            setTimeout(() => {
+                isUpdatingSlides = false;
+            }, 10);
         }
 
         function changeSlide(direction) {
+            // Save scroll position before changing slide
+            const savedScrollY = window.scrollY;
+            
             currentSlide += direction;
             if (currentSlide >= totalSlides) currentSlide = 0;
             if (currentSlide < 0) currentSlide = totalSlides - 1;
             updateSlides();
+            
+            // Double-check scroll position is restored
+            if (window.scrollY !== savedScrollY) {
+                window.scrollTo(0, savedScrollY);
+            }
         }
 
         function goToSlide(index) {
+            const savedScrollY = window.scrollY;
             currentSlide = index;
             updateSlides();
             resetAutoPlay();
+            
+            // Ensure scroll position is maintained
+            setTimeout(() => {
+                if (window.scrollY !== savedScrollY) {
+                    window.scrollTo(0, savedScrollY);
+                }
+            }, 5);
         }
 
         function toggleAutoPlay() {
@@ -1862,7 +1911,7 @@
             }
         }
 
-        // Pause on hover
+        // Pause on hover - without causing scroll
         const slideshowContainer = document.querySelector('.slideshow-container');
         if (slideshowContainer) {
             slideshowContainer.addEventListener('mouseenter', () => {
@@ -1893,7 +1942,9 @@
         mobileNavLinks.forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenu.classList.add('hidden');
-                menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>';
+                if (menuIcon) {
+                    menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>';
+                }
             });
         });
 
@@ -1938,10 +1989,10 @@
         }
 
         // ============================================
-        // FIX: Prevent page from scrolling to top
+        // PREVENT ALL AUTO-SCROLL BEHAVIOR
         // ============================================
         
-        // Fix 1: Disable all empty anchor links that cause scrolling issues
+        // Disable all empty anchor links
         document.querySelectorAll('a[href="#"], a[href="javascript:void(0)"]').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1950,39 +2001,17 @@
             });
         });
 
-        // Fix 2: Override the default anchor behavior for any link with href="#"
-        // This prevents the URL from changing and page from jumping
-        document.querySelectorAll('a[href="#"]').forEach(link => {
-            link.addEventListener('click', function(e) {
+        // Prevent hash changes from causing scroll
+        window.addEventListener('hashchange', function(e) {
+            if (window.location.hash === '#' || window.location.hash === '') {
                 e.preventDefault();
                 e.stopPropagation();
+                history.pushState(null, null, window.location.pathname);
                 return false;
-            });
+            }
         });
 
-        // Fix 3: Prevent any accidental scroll events from smooth scroll on empty links
-        if (typeof history !== 'undefined' && history.pushState) {
-            // This prevents hash changes from causing scroll
-            window.addEventListener('hashchange', function(e) {
-                if (window.location.hash === '#') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    history.pushState(null, null, window.location.pathname);
-                    return false;
-                }
-            });
-        }
-
-        // Fix 4: Ensure footer links don't cause page jumps
-        const footerPrivacy = document.querySelector('.footer a[href="#"]');
-        if (footerPrivacy) {
-            footerPrivacy.addEventListener('click', function(e) {
-                e.preventDefault();
-                return false;
-            });
-        }
-
-        console.log('All auto-scroll issues have been fixed!');
+        console.log('Slideshow fixed - page will NOT scroll up when images change!');
     </script>
 </body>
 </html>
