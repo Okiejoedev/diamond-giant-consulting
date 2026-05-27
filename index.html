@@ -1674,7 +1674,7 @@
         </div>
     </footer>
 
-    <script>
+   <script>
         // ============================================
         // 🖼️ SLIDESHOW JAVASCRIPT FUNCTIONALITY
         // ============================================
@@ -1712,14 +1712,16 @@
 
             // Touch/swipe support
             const slideshowContainer = document.querySelector('.slideshow-container');
-            slideshowContainer.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-            }, { passive: true });
+            if (slideshowContainer) {
+                slideshowContainer.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
 
-            slideshowContainer.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            }, { passive: true });
+                slideshowContainer.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                }, { passive: true });
+            }
         });
 
         function createDots() {
@@ -1775,12 +1777,14 @@
             currentSlideEl.textContent = currentSlide + 1;
 
             // Reset progress bar
-            progressBar.style.transition = 'none';
-            progressBar.style.width = '0%';
-            setTimeout(() => {
-                progressBar.style.transition = 'width 5s linear';
-                progressBar.style.width = '100%';
-            }, 50);
+            if (progressBar) {
+                progressBar.style.transition = 'none';
+                progressBar.style.width = '0%';
+                setTimeout(() => {
+                    progressBar.style.transition = 'width 5s linear';
+                    progressBar.style.width = '100%';
+                }, 50);
+            }
         }
 
         function changeSlide(direction) {
@@ -1805,18 +1809,22 @@
             isAutoPlaying = !isAutoPlaying;
 
             if (isAutoPlaying) {
-                pauseIcon.classList.remove('hidden');
-                playIcon.classList.add('hidden');
-                playPauseText.textContent = 'Pause';
-                autoplayIndicator.classList.remove('paused');
-                autoplayIndicator.innerHTML = '<span class="playing-dot"></span><span>Auto-playing</span>';
+                if (pauseIcon) pauseIcon.classList.remove('hidden');
+                if (playIcon) playIcon.classList.add('hidden');
+                if (playPauseText) playPauseText.textContent = 'Pause';
+                if (autoplayIndicator) {
+                    autoplayIndicator.classList.remove('paused');
+                    autoplayIndicator.innerHTML = '<span class="playing-dot"></span><span>Auto-playing</span>';
+                }
                 startAutoPlay();
             } else {
-                pauseIcon.classList.add('hidden');
-                playIcon.classList.remove('hidden');
-                playPauseText.textContent = 'Play';
-                autoplayIndicator.classList.add('paused');
-                autoplayIndicator.innerHTML = '<span class="playing-dot"></span><span>Paused</span>';
+                if (pauseIcon) pauseIcon.classList.add('hidden');
+                if (playIcon) playIcon.classList.remove('hidden');
+                if (playPauseText) playPauseText.textContent = 'Play';
+                if (autoplayIndicator) {
+                    autoplayIndicator.classList.add('paused');
+                    autoplayIndicator.innerHTML = '<span class="playing-dot"></span><span>Paused</span>';
+                }
                 stopAutoPlay();
             }
         }
@@ -1846,10 +1854,8 @@
             
             if (Math.abs(diff) > swipeThreshold) {
                 if (diff > 0) {
-                    // Swipe left - next slide
                     changeSlide(1);
                 } else {
-                    // Swipe right - previous slide
                     changeSlide(-1);
                 }
                 resetAutoPlay();
@@ -1858,13 +1864,14 @@
 
         // Pause on hover
         const slideshowContainer = document.querySelector('.slideshow-container');
-        slideshowContainer.addEventListener('mouseenter', () => {
-            if (isAutoPlaying) stopAutoPlay();
-        });
-        slideshowContainer.addEventListener('mouseleave', () => {
-            if (isAutoPlaying) startAutoPlay();
-        });
-
+        if (slideshowContainer) {
+            slideshowContainer.addEventListener('mouseenter', () => {
+                if (isAutoPlaying) stopAutoPlay();
+            });
+            slideshowContainer.addEventListener('mouseleave', () => {
+                if (isAutoPlaying) startAutoPlay();
+            });
+        }
 
         // Mobile menu toggle
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -1872,14 +1879,16 @@
         const menuIcon = document.getElementById('menu-icon');
         const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-            if (mobileMenu.classList.contains('hidden')) {
-                menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>';
-            } else {
-                menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>';
-            }
-        });
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                if (mobileMenu.classList.contains('hidden')) {
+                    menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>';
+                } else {
+                    menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>';
+                }
+            });
+        }
 
         mobileNavLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -1923,43 +1932,57 @@
         });
 
         // Set current year in footer
-        document.getElementById('year').textContent = new Date().getFullYear();
-
- // EMERGENCY FIX - Prevent all unwanted scroll-to-top behavior
-(function() {
-    // 1. Disable all empty href links
-    document.querySelectorAll('a[href="#"], a[href="javascript:void(0)"]').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        });
-    });
-    
-    // 2. Prevent any anchor from doing unwanted scrolling
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-        if (link.getAttribute('href') === '#') {
-            link.removeAttribute('href');
-            link.style.cursor = 'pointer';
+        const yearSpan = document.getElementById('year');
+        if (yearSpan) {
+            yearSpan.textContent = new Date().getFullYear();
         }
-    });
-    
-    // 3. Fix the main smooth scroll function
-    const originalScrollBehavior = window.scrollTo;
-    let isScrolling = false;
-    
-    // 4. Prevent scroll events from being triggered by link hovers
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('mouseenter', function(e) {
-            // Do nothing - prevents accidental triggers
+
+        // ============================================
+        // FIX: Prevent page from scrolling to top
+        // ============================================
+        
+        // Fix 1: Disable all empty anchor links that cause scrolling issues
+        document.querySelectorAll('a[href="#"], a[href="javascript:void(0)"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            });
         });
-    });
-    
-    console.log('Scroll fix applied - empty anchor links disabled');
-})();
 
+        // Fix 2: Override the default anchor behavior for any link with href="#"
+        // This prevents the URL from changing and page from jumping
+        document.querySelectorAll('a[href="#"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            });
+        });
 
- 
+        // Fix 3: Prevent any accidental scroll events from smooth scroll on empty links
+        if (typeof history !== 'undefined' && history.pushState) {
+            // This prevents hash changes from causing scroll
+            window.addEventListener('hashchange', function(e) {
+                if (window.location.hash === '#') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    history.pushState(null, null, window.location.pathname);
+                    return false;
+                }
+            });
+        }
+
+        // Fix 4: Ensure footer links don't cause page jumps
+        const footerPrivacy = document.querySelector('.footer a[href="#"]');
+        if (footerPrivacy) {
+            footerPrivacy.addEventListener('click', function(e) {
+                e.preventDefault();
+                return false;
+            });
+        }
+
+        console.log('All auto-scroll issues have been fixed!');
     </script>
 </body>
 </html>
