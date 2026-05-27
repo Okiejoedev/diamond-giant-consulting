@@ -1973,19 +1973,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
     
-    // 3. Fix the main smooth scroll function
-    const originalScrollBehavior = window.scrollTo;
-    let isScrolling = false;
-    
-    // 4. Prevent scroll events from being triggered by link hovers
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('mouseenter', function(e) {
-            // Do nothing - prevents accidental triggers
-        });
-    });
-    
-    console.log('Scroll fix applied - empty anchor links disabled');
-})();
+
 </script>
     </script>
 </body>
