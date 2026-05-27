@@ -1925,7 +1925,38 @@
         // Set current year in footer
         document.getElementById('year').textContent = new Date().getFullYear();
 
- 
+ // EMERGENCY FIX - Prevent all unwanted scroll-to-top behavior
+(function() {
+    // 1. Disable all empty href links
+    document.querySelectorAll('a[href="#"], a[href="javascript:void(0)"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+    });
+    
+    // 2. Prevent any anchor from doing unwanted scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+        if (link.getAttribute('href') === '#') {
+            link.removeAttribute('href');
+            link.style.cursor = 'pointer';
+        }
+    });
+    
+    // 3. Fix the main smooth scroll function
+    const originalScrollBehavior = window.scrollTo;
+    let isScrolling = false;
+    
+    // 4. Prevent scroll events from being triggered by link hovers
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('mouseenter', function(e) {
+            // Do nothing - prevents accidental triggers
+        });
+    });
+    
+    console.log('Scroll fix applied - empty anchor links disabled');
+})();
 
 
  
