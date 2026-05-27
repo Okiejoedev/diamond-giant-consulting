@@ -1954,24 +1954,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 
         <script>
-// EMERGENCY FIX - Prevent all unwanted scroll-to-top behavior
-(function() {
-    // 1. Disable all empty href links
-    document.querySelectorAll('a[href="#"], a[href="javascript:void(0)"]').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        });
-    });
     
-    // 2. Prevent any anchor from doing unwanted scrolling
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-        if (link.getAttribute('href') === '#') {
-            link.removeAttribute('href');
-            link.style.cursor = 'pointer';
-        }
-    });
+
     
 
 </script>
